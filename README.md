@@ -1,6 +1,4 @@
-# todo_list
-
-todo.R -- convert a spreadsheet of dates into a todo list
+# todo.R -- convert a spreadsheet of dates into a todo list
 
 Given a comma-separated values (CSV) file with the following columns: Pub_date, Type, Topic, Author, First_draft_date, Draft_done, Art_brief_date, Brief_done, Subedit_date, Subedit_done, Pages_pass_date, Pass_done, Assigned_words and Status, this script creates a to-do list of upcoming 'milestones' -- in this case, the due dates for first draft, art brief, subediting, and article pass:
 
@@ -23,6 +21,9 @@ Given a comma-separated values (CSV) file with the following columns: Pub_date, 
 13 2021-05-06 2021-05-13 55 days   Genomics       Pages pass 
 ```
 
+The script expects columns ending with `_done` to include either TRUE or FALSE to indicate a given task has been completed.
+
+# License
 Copyright 2021 Jeffrey M. Perkel
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
