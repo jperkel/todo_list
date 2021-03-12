@@ -15,9 +15,12 @@ pub_table <- suppressMessages(read_csv("~/Downloads/Planning_spreadsheet_demo.cs
 
 today <- format(Sys.Date(), "%Y-%m-%d")
 
-# convert the milestone column headings (eg, 'First_draft_date' to entries in a new column called 'Milestones',
-# and convert the associated dates to a new column called 'Date'.
-# remove rows in which no date is supplied, and calculate the number of days remaining for each milestone
+# Use the 'tidyr' package to make our data 'tidy' (https://r4ds.had.co.nz/tidy-data.html). Each row, representing
+# one article, is split into four, one each for First_draft_date, Art_brief_date, Subedit_date, and
+# Pages_pass_date. Those column headings (ie, 'milestones') are saved in a new column called Milestones, 
+# and the associated dates go into a new column called Date.
+#
+# Remove rows in which no date is supplied, and calculate the number of days remaining for each milestone. 
 pub_table <- pub_table %>% 
   pivot_longer(c(First_draft_date, Art_brief_date, Subedit_date, Pages_pass_date), 
                names_to = "Milestone", values_to = "Date") %>% 
