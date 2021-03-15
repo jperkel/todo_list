@@ -1,0 +1,6 @@
+Pub_date,Type,Print,Topic,Author,First_draft_date,Draft_done,Art_brief_date,Brief_done,Subedit_date,Subedit_done,Pages_pass_date,Pass_done,Assigned_words,Status
+2021-03-25,TechFeat,TRUE,Cancer,Author 1,2021-02-04,TRUE,2021-02-25,TRUE,2021-03-04,TRUE,2021-03-18,FALSE,2400,subedit
+2021-04-01,TechFeat,TRUE,Neuroscience,Author 2,2021-02-11,TRUE,2021-03-04,TRUE,2021-03-10,TRUE,2021-03-24,FALSE,1500,subedit
+2021-04-22,TechFeat,TRUE,Bioinformatics,Author 3,2021-03-04,TRUE,2021-03-25,FALSE,2021-03-30,FALSE,2021-04-15,FALSE,2400,1st draft received
+2021-05-06,Toolbox,TRUE,Microscopy,Author 4,2021-03-18,FALSE,2021-04-08,FALSE,2021-04-14,FALSE,2021-04-28,FALSE,1500,assigned
+2021-05-13,TechFeat,TRUE,Genomics,Author 5,2021-03-25,FALSE,2021-04-15,FALSE,2021-04-21,FALSE,2021-05-06,FALSE,1300,not assigned

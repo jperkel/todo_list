@@ -11,7 +11,7 @@
 suppressPackageStartupMessages({library(tidyverse)})
 
 # make sure path points to your planning spreadsheet location
-pub_table <- suppressMessages(read_csv("~/Downloads/Planning_spreadsheet_demo.csv"))
+pub_table <- suppressMessages(read_csv("Planning_spreadsheet_demo.csv"))
 
 today <- format(Sys.Date(), "%Y-%m-%d")
 
