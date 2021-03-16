@@ -31,7 +31,7 @@ The script expects columns ending with `_done` to include either TRUE or FALSE t
 
 Given a second (optional) spreadsheet called Other_todos.csv with columns for Due_date, Todo (text) and Done (boolean), the script can fold additional items into the to-do list. That is, with this (and the table above):
 
-![](spreadsheet_with_extra_todos.png){width="568"}
+![](spreadsheet_with_extra_todos.png)
 
 You get this:
 
