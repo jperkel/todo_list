@@ -31,8 +31,6 @@ pub_table <- pub_table %>%
                names_to = "Milestone", values_to = "Date") %>% 
   filter(!is.na(Date)) %>% 
   mutate(Remaining = as.Date(Date) - as.Date(today)) 
-# sort the table by Date
-pub_table <- pub_table[order(pub_table$Date, pub_table$Pub_date),]
 
 # for each milestone, if corresponding _done field is TRUE (ie, if the task is done), delete the row
 indexes <- rep(TRUE, nrow(pub_table))
@@ -62,5 +60,6 @@ if (!is.null(other_todos)) {
   pub_table <- rbind(pub_table, other_todos)
 }
 
+# sort the table by date
 pub_table <- pub_table[order(pub_table$Date, pub_table$Pub_date),]
 print (pub_table, n=Inf)
