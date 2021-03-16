@@ -4,39 +4,64 @@ Given a comma-separated values (CSV) file with the following columns: Pub_date, 
 
 In other words, this:
 
-![screenshot](spreadsheet_demo.png)
+![](spreadsheet_demo.png)
 
-becomes this: 
+becomes this:
 
-```
-# A tibble: 13 x 5
-   Date       Pub_date   Remaining Topic          Milestone  
-   <date>     <date>     <drtn>    <chr>          <chr>      
- 1 2021-03-18 2021-03-25  6 days   Cancer         Pages pass 
- 2 2021-03-18 2021-05-06  6 days   Microscopy     First draft
- 3 2021-03-24 2021-04-01 12 days   Neuroscience   Pages pass 
- 4 2021-03-25 2021-04-22 13 days   Bioinformatics Art brief  
- 5 2021-03-25 2021-05-13 13 days   Genomics       First draft
- 6 2021-03-30 2021-04-22 18 days   Bioinformatics Subedit    
- 7 2021-04-08 2021-05-06 27 days   Microscopy     Art brief  
- 8 2021-04-14 2021-05-06 33 days   Microscopy     Subedit    
- 9 2021-04-15 2021-04-22 34 days   Bioinformatics Pages pass 
-10 2021-04-15 2021-05-13 34 days   Genomics       Art brief  
-11 2021-04-21 2021-05-13 40 days   Genomics       Subedit    
-12 2021-04-28 2021-05-06 47 days   Microscopy     Pages pass 
-13 2021-05-06 2021-05-13 55 days   Genomics       Pages pass 
-```
+    # A tibble: 13 x 5
+       Date       Pub_date   Remaining Topic          Milestone  
+       <date>     <date>     <drtn>    <chr>          <chr>      
+     1 2021-03-18 2021-03-25  6 days   Cancer         Pages pass 
+     2 2021-03-18 2021-05-06  6 days   Microscopy     First draft
+     3 2021-03-24 2021-04-01 12 days   Neuroscience   Pages pass 
+     4 2021-03-25 2021-04-22 13 days   Bioinformatics Art brief  
+     5 2021-03-25 2021-05-13 13 days   Genomics       First draft
+     6 2021-03-30 2021-04-22 18 days   Bioinformatics Subedit    
+     7 2021-04-08 2021-05-06 27 days   Microscopy     Art brief  
+     8 2021-04-14 2021-05-06 33 days   Microscopy     Subedit    
+     9 2021-04-15 2021-04-22 34 days   Bioinformatics Pages pass 
+    10 2021-04-15 2021-05-13 34 days   Genomics       Art brief  
+    11 2021-04-21 2021-05-13 40 days   Genomics       Subedit    
+    12 2021-04-28 2021-05-06 47 days   Microscopy     Pages pass 
+    13 2021-05-06 2021-05-13 55 days   Genomics       Pages pass 
 
 The script expects columns ending with `_done` to include either TRUE or FALSE to indicate a given task has been completed.
 
+# How to add to-do list items unrelated to a specific article
+
+Given a second (optional) spreadsheet called Other_todos.csv with columns for Due_date, Todo (text) and Done (boolean), the script can fold additional items into the to-do list. That is, with this (and the table above):
+
+![](spreadsheet_with_extra_todos.png){width="568"}
+
+You get this:
+
+    # A tibble: 15 x 5
+       Date       Pub_date   Remaining Topic               Milestone  
+       <date>     <date>     <drtn>    <chr>               <chr>      
+     1 2021-03-18 2021-03-25  2 days   Cancer              Pages pass 
+     2 2021-03-18 2021-05-06  2 days   Microscopy          First draft
+     3 2021-03-24 2021-04-01  8 days   Neuroscience        Pages pass 
+     4 2021-03-25 2021-04-22  9 days   Bioinformatics      Art brief  
+     5 2021-03-25 2021-05-13  9 days   Genomics            First draft
+     6 2021-03-30 2021-04-22 14 days   Bioinformatics      Subedit    
+     7 2021-04-01 NA         16 days   Start fact-checking To-do      
+     8 2021-04-08 2021-05-06 23 days   Microscopy          Art brief  
+     9 2021-04-14 2021-05-06 29 days   Microscopy          Subedit    
+    10 2021-04-14 NA         29 days   Schedule meeting    To-do      
+    11 2021-04-15 2021-04-22 30 days   Bioinformatics      Pages pass 
+    12 2021-04-15 2021-05-13 30 days   Genomics            Art brief  
+    13 2021-04-21 2021-05-13 36 days   Genomics            Subedit    
+    14 2021-04-28 2021-05-06 43 days   Microscopy          Pages pass 
+    15 2021-05-06 2021-05-13 51 days   Genomics            Pages pass 
+
 # License
+
 Copyright 2021 Jeffrey M. Perkel
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2.  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3.  Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-

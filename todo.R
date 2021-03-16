@@ -9,9 +9,14 @@
 # 
 
 suppressPackageStartupMessages({library(tidyverse)})
+# variable to hold ancillary to-dos, if they exist
+other_todos <- NULL
 
 # make sure path points to your planning spreadsheet location
 pub_table <- suppressMessages(read_csv("Planning_spreadsheet_demo.csv"))
+if (file.exists("Other_todos.csv")) {
+  other_todos <- suppressMessages(read_csv("Other_todos.csv"))
+}
 
 today <- format(Sys.Date(), "%Y-%m-%d")
 
@@ -46,4 +51,15 @@ pub_table <- pub_table[which(indexes == TRUE),] %>%
 pub_table$Milestone <- pub_table$Milestone %>% gsub('_date$', '', .) %>% 
   gsub('_', ' ', .)
 
+# process ancillary to-do list, if it exists, and fold into pub_table
+if (!is.null(other_todos)) {
+  other_todos <- other_todos %>% 
+    mutate(Remaining = as.Date(Due_date) - as.Date(today)) 
+  other_todos <- other_todos[other_todos$Done != TRUE,] %>% 
+    mutate(Date = Due_date, Pub_date = NA, Topic = Todo, Milestone = "To-do") %>%
+    select(Date, Pub_date, Remaining, Topic, Milestone)
+  pub_table <- rbind(pub_table, other_todos)
+}
+
+pub_table <- pub_table[order(pub_table$Date, pub_table$Pub_date),]
 print (pub_table, n=Inf)
