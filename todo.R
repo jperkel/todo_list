@@ -53,10 +53,11 @@ pub_table$Milestone <- pub_table$Milestone %>% gsub('_date$', '', .) %>%
 
 # process ancillary to-do list, if it exists, and fold into pub_table
 if (!is.null(other_todos)) {
-  other_todos <- other_todos %>% 
-    mutate(Remaining = as.Date(Due_date) - as.Date(today)) 
   other_todos <- other_todos[other_todos$Done != TRUE,] %>% 
-    mutate(Date = Due_date, Pub_date = NA, Topic = Todo, Milestone = "To-do") %>%
+    mutate(Remaining = as.Date(Due_date) - as.Date(today), 
+           Pub_date = NA, 
+           Milestone = "To-do") %>%
+    rename(Date = Due_date, Topic = Todo) %>%
     select(Date, Pub_date, Remaining, Topic, Milestone)
   pub_table <- rbind(pub_table, other_todos)
 }
