@@ -52,11 +52,9 @@ becomes:
 
 # Usage
 1. Download this Git repository
-2. At the command line, navigate to the directory where you downloaded this script and execute `Rscript todo.R` (macOS) or `Rscript.exe todo.R` (Windows).
-
-Note: The script expects columns ending with `_done` to include either TRUE or FALSE (corresponding to a Google Sheets checkbox) to indicate a given task has been completed.
-
-By default, the script assumes dates will be given in the format "YYYY-MM-DD". If you use another format, eg "MM/DD/YYYY", indicate that on line 21.
+2. By default, the script assumes dates will be given in the format "YYYY-MM-DD". If you use another format, eg "MM/DD/YYYY", use a plain-text editor (eg, Windows Notepad or macOS TextEdit) to indicate that on line 21.
+3. The script also assumes the CSVs containing your to-do list will be in the same directory as the script, with the names `Planning_spreadsheet_demo.csv` and `Other_todos.csv`. If that is not the case, adjust the file paths on lines 24-25 accordingly.
+4. At the command line, navigate to the directory where you downloaded this script and execute `Rscript todo.R` (macOS) or `Rscript.exe todo.R` (Windows).
 
 # License
 
