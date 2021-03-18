@@ -12,13 +12,21 @@ suppressPackageStartupMessages({library(tidyverse)})
 # variable to hold ancillary to-dos, if they exist
 other_todos <- NULL
 
+# set this to match the date format you use. Suppose the date is March 1, 2021:
+# "2021-03-01" = "%Y-%m-%d"
+# "03/01/2021" = "%m/%d/%Y"
+# "01/03/2021" = "%d/%m/%Y"
+# "01 Mar 2021" = "%d %b %Y"
+# for other options see https://www.r-bloggers.com/2013/08/date-formats-in-r/
+date_format <- "%Y-%m-%d"
+
 # make sure path points to your planning spreadsheet location
 pub_table <- suppressMessages(read_csv("Planning_spreadsheet_demo.csv"))
 if (file.exists("Other_todos.csv")) {
   other_todos <- suppressMessages(read_csv("Other_todos.csv"))
 }
 
-today <- format(Sys.Date(), "%Y-%m-%d")
+today <- Sys.Date()
 
 # Use the 'tidyr' package to make our data 'tidy' (https://r4ds.had.co.nz/tidy-data.html). Each row, representing
 # one article, is split into four, one each for First_draft_date, Art_brief_date, Subedit_date, and
@@ -30,7 +38,7 @@ pub_table <- pub_table %>%
   pivot_longer(c(First_draft_date, Art_brief_date, Subedit_date, Pages_pass_date), 
                names_to = "Milestone", values_to = "Date") %>% 
   filter(!is.na(Date)) %>% 
-  mutate(Remaining = as.Date(Date) - as.Date(today)) 
+  mutate(Remaining = as.Date(Date, format = date_format) - as.Date(today, format = date_format)) 
 
 # for each milestone, if corresponding _done field is TRUE (ie, if the task is done), delete the row
 indexes <- rep(TRUE, nrow(pub_table))
@@ -52,7 +60,7 @@ pub_table$Milestone <- pub_table$Milestone %>% gsub('_date$', '', .) %>%
 # process ancillary to-do list, if it exists, and fold into pub_table
 if (!is.null(other_todos)) {
   other_todos <- other_todos[other_todos$Done != TRUE,] %>% 
-    mutate(Remaining = as.Date(Due_date) - as.Date(today), 
+    mutate(Remaining = as.Date(Due_date, format = date_format) - as.Date(today, format = date_format), 
            Pub_date = NA, 
            Milestone = "To-do") %>%
     rename(Date = Due_date, Topic = Todo) %>%

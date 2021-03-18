@@ -25,15 +25,11 @@ becomes this:
     12 2021-04-28 2021-05-06 47 days   Microscopy     Pages pass 
     13 2021-05-06 2021-05-13 55 days   Genomics       Pages pass 
 
-The script expects columns ending with `_done` to include either TRUE or FALSE to indicate a given task has been completed.
-
-# How to add to-do list items unrelated to a specific article
-
-Given a second (optional) spreadsheet called Other_todos.csv with columns for Due_date, Todo (text) and Done (boolean), the script can fold additional items into the to-do list. That is, with this (and the table above):
+Additional to-do-list items not associated with a given article can also be folded in. Assuming you have a second (optional) spreadsheet called Other_todos.csv with columns for Due_date, Todo (text) and Done (TRUE/FALSE), this:
 
 ![](spreadsheet_with_extra_todos.png)
 
-You get this:
+becomes:
 
     # A tibble: 15 x 5
        Date       Pub_date   Remaining Topic               Milestone  
@@ -53,6 +49,14 @@ You get this:
     13 2021-04-21 2021-05-13 36 days   Genomics            Subedit    
     14 2021-04-28 2021-05-06 43 days   Microscopy          Pages pass 
     15 2021-05-06 2021-05-13 51 days   Genomics            Pages pass 
+
+# Usage
+1. Download this Git repository
+2. At the command line, navigate to the directory where you downloaded this script and execute `Rscript todo.R` (macOS) or `Rscript.exe todo.R` (Windows).
+
+Note: The script expects columns ending with `_done` to include either TRUE or FALSE (corresponding to a Google Sheets checkbox) to indicate a given task has been completed.
+
+By default, the script assumes dates will be given in the format "YYYY-MM-DD". If you use another format, eg "MM/DD/YYYY", indicate that on line 21.
 
 # License
 
