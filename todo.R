@@ -35,8 +35,9 @@ today <- Sys.Date()
 #
 # Remove rows in which no date is supplied, and calculate the number of days remaining for each milestone. 
 pub_table <- pub_table %>% 
-  pivot_longer(c(First_draft_date, Art_brief_date, Subedit_date, Pages_pass_date), 
-               names_to = "Milestone", values_to = "Date") %>% 
+  pivot_longer(cols = (!starts_with("Pub") & ends_with("_date")), names_to = "Milestone", values_to = "Date") %>%
+  # pivot_longer(c(First_draft_date, Art_brief_date, Subedit_date, Pages_pass_date), 
+  #              names_to = "Milestone", values_to = "Date") %>% 
   filter(!is.na(Date)) %>% 
   mutate(Remaining = as.Date(Date, format = date_format) - as.Date(today, format = date_format)) 
 
