@@ -1,10 +1,8 @@
 # todo.R -- convert a spreadsheet into a todo list
 #
-# Given a comma-separated values (CSV) file with the following columns: 
-# Pub_date, Type, Print, Topic, Author, First_draft_date, Draft_done, Art_brief_date, 
-# Brief_done, Subedit_date, Subedit_done, Pages_pass_date, Pass_done, Assigned_words and Status, 
-# this script creates a to-do list of upcoming 'milestones' -- in this case, the due dates for
-# first draft, art brief, subediting, and article pass. 
+# Given a comma-separated values (CSV) file with columns for: 
+# Pub_date, Topic, Status, plus arbitrary pairs of MILESTONE_date and MILESTONE_done, 
+# this script creates a to-do list of upcoming 'milestones'. 
 #
 # 
 
@@ -28,44 +26,45 @@ if (file.exists("Other_todos.csv")) {
 
 today <- Sys.Date()
 
-# Use the 'tidyr' package to make our data 'tidy' (https://r4ds.had.co.nz/tidy-data.html). Each row, representing
-# one article, is split into four, one each for First_draft_date, Art_brief_date, Subedit_date, and
-# Pages_pass_date. Those column headings (ie, 'milestones') are saved in a new column called Milestones, 
+# Use the 'tidyr' package to make our data 'tidy' (https://r4ds.had.co.nz/tidy-data.html). 
+# Each row, representing one article, is split into multiple columns, one for each _date column  
+# Those column headings are saved in a new column called Milestones, 
 # and the associated dates go into a new column called Date.
-#
-# Remove rows in which no date is supplied, and calculate the number of days remaining for each milestone. 
 pub_table <- pub_table %>% 
   pivot_longer(cols = (!starts_with("Pub") & ends_with("_date")), names_to = "Milestone", values_to = "Date") %>%
-  # pivot_longer(c(First_draft_date, Art_brief_date, Subedit_date, Pages_pass_date), 
-  #              names_to = "Milestone", values_to = "Date") %>% 
+  # Remove rows in which no date is supplied 
   filter(!is.na(Date)) %>% 
-  mutate(Remaining = as.Date(Date, format = date_format) - as.Date(today, format = date_format)) 
-
-# for each milestone, if corresponding _done field is TRUE (ie, if the task is done), delete the row
-indexes <- rep(TRUE, nrow(pub_table))
-for (i in 1:nrow(pub_table)) {
-  switch(pub_table$Milestone[i], 
-         "First_draft_date" = { if (is.na(pub_table$Draft_done[i]) || pub_table$Draft_done[i] == TRUE) indexes[i] <- FALSE },
-         "Art_brief_date" = { if (is.na(pub_table$Brief_done[i]) || pub_table$Brief_done[i] == TRUE) indexes[i] <- FALSE },
-         "Subedit_date" = { if (is.na(pub_table$Subedit_done[i]) || pub_table$Subedit_done[i] == TRUE) indexes[i] <- FALSE },
-         "Pages_pass_date" = { if (is.na(pub_table$Pass_done[i]) || pub_table$Pass_done[i] == TRUE) indexes[i] <- FALSE }
-  )
-}
-pub_table <- pub_table[which(indexes == TRUE),] %>% 
-  select("Date", "Pub_date", "Remaining", "Topic", "Milestone") 
-
-# rename milestone from 'Milestone_due_date' -> 'Milestone' 
-pub_table$Milestone <- pub_table$Milestone %>% gsub('_date$', '', .) %>% 
-  gsub('_', ' ', .)
+  # remove cols we don't need
+  select(-c(Type, Print, Author, Assigned_words)) %>% 
+  # calculate the number of days remaining for each milestone.
+  mutate(Remaining = as.Date(Date, format = date_format) - as.Date(today, format = date_format),
+         # col_to_eval is the column that we're interested in -- that is, MILESTONE_done == FALSE?
+         col_to_eval = stringr::str_replace(Milestone, '_date$', '_done'),
+         row = row_number()) %>% 
+  # pivot table and group by row # so that we can match Milestone_date with Milestone_done field and
+  # determine if the milestone should be included in the final todo list
+  pivot_longer(where(~ is.logical(.x))) %>% 
+  group_by(row) %>% 
+  # here is where we decide what to include: if the col_to_eval == name and its corresponding value is FALSE
+  filter(col_to_eval == name & !value) %>% 
+  # pivot back to wide
+  pivot_wider(where(~ !is.logical(.x))) %>% 
+  ungroup() %>%
+  select(c(Date, Pub_date, Remaining, Topic, Milestone, Status)) %>%
+  # rename milestone from 'Milestone_date' -> 'Milestone' 
+  mutate(Milestone = stringr::str_replace(Milestone, '_date', ''),
+         Milestone = stringr::str_replace_all(Milestone, '_', ' ')) 
 
 # process ancillary to-do list, if it exists, and fold into pub_table
 if (!is.null(other_todos)) {
   other_todos <- other_todos[other_todos$Done != TRUE,] %>% 
     mutate(Remaining = as.Date(Due_date, format = date_format) - as.Date(today, format = date_format), 
            Pub_date = NA, 
-           Milestone = "To-do") %>%
+           Milestone = "To-do",
+           Status = NA
+           ) %>%
     rename(Date = Due_date, Topic = Todo) %>%
-    select(Date, Pub_date, Remaining, Topic, Milestone)
+    select(Date, Pub_date, Remaining, Topic, Milestone, Status)
   pub_table <- rbind(pub_table, other_todos)
 }
 
