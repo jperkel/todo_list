@@ -43,12 +43,12 @@ pub_table <- pub_table %>%
          row = row_number()) %>% 
   # pivot table and group by row # so that we can match Milestone_date with Milestone_done field and
   # determine if the milestone should be included in the final todo list
-  pivot_longer(where(~ is.logical(.x))) %>% 
+  pivot_longer(ends_with("_done")) %>% 
   group_by(row) %>% 
   # here is where we decide what to include: if the col_to_eval == name and its corresponding value is FALSE
   filter(col_to_eval == name & !value) %>% 
   # pivot back to wide
-  pivot_wider(where(~ !is.logical(.x))) %>% 
+  pivot_wider(!ends_with("_done")) %>% 
   ungroup() %>%
   select(c(Date, Pub_date, Remaining, Topic, Milestone, Status)) %>%
   # rename milestone from 'Milestone_date' -> 'Milestone' 
@@ -69,5 +69,5 @@ if (!is.null(other_todos)) {
 }
 
 # sort the table by date
-pub_table <- pub_table[order(pub_table$Date, pub_table$Pub_date),]
+pub_table <- pub_table %>% arrange(Date, Pub_date)
 print (pub_table, n=Inf)
