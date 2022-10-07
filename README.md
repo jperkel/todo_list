@@ -1,60 +1,38 @@
 # todo.R -- convert a spreadsheet of dates into a todo list
 
-Given a comma-separated values (CSV) file with the following columns: Pub_date, Type, Topic, Author, First_draft_date, Draft_done, Art_brief_date, Brief_done, Subedit_date, Subedit_done, Pages_pass_date, Pass_done, Assigned_words and Status, this script creates a to-do list of upcoming 'milestones' -- in this case, the due dates for first draft, art brief, subediting, and article pass.
+Given a comma-separated values (CSV) file with columns for project_name, plus arbitrary pairs of MILESTONE_date and MILESTONE_done, this script creates a to-do list of upcoming 'milestones'.
 
 In other words, this:
 
-![](spreadsheet_demo.png)
+| project_name | start_date | start_done | presentation_date | presentation_done | project_close_date | project_close_done |
+|:------------:|:----------:|:----------:|:-----------------:|:-----------------:|:------------------:|:-------------------------:|
+|  Project_A   | 2022-10-08 |    TRUE    |    2022-10-13     |       TRUE        | 2022-10-20 | TRUE |
+|  Project_B   | 2022-10-09 |    TRUE    |    2022-10-14     |       TRUE        | 2022-10-21 | FALSE |
+|  Project_C   | 2022-10-10 |    TRUE    |    2022-10-15     |       FALSE       | 2022-10-22 | FALSE |
+|  Project_D   | 2022-10-11 |   FALSE    |    2022-10-16     |       FALSE       | 2022-10-23 | FALSE |
+|  Project_E   | 2022-10-12 |   FALSE    |    2022-10-17     |       FALSE       | 2022-10-24 | FALSE |
 
 becomes this:
 
-    # A tibble: 13 x 5
-       Date       Pub_date   Remaining Topic          Milestone  
-       <date>     <date>     <drtn>    <chr>          <chr>      
-     1 2021-03-18 2021-03-25  6 days   Cancer         Pages pass 
-     2 2021-03-18 2021-05-06  6 days   Microscopy     First draft
-     3 2021-03-24 2021-04-01 12 days   Neuroscience   Pages pass 
-     4 2021-03-25 2021-04-22 13 days   Bioinformatics Art brief  
-     5 2021-03-25 2021-05-13 13 days   Genomics       First draft
-     6 2021-03-30 2021-04-22 18 days   Bioinformatics Subedit    
-     7 2021-04-08 2021-05-06 27 days   Microscopy     Art brief  
-     8 2021-04-14 2021-05-06 33 days   Microscopy     Subedit    
-     9 2021-04-15 2021-04-22 34 days   Bioinformatics Pages pass 
-    10 2021-04-15 2021-05-13 34 days   Genomics       Art brief  
-    11 2021-04-21 2021-05-13 40 days   Genomics       Subedit    
-    12 2021-04-28 2021-05-06 47 days   Microscopy     Pages pass 
-    13 2021-05-06 2021-05-13 55 days   Genomics       Pages pass 
+| due_date | remaining | project_name | milestone | 
+|:------------:|:----------:|:----------:|:-----------------:|
+|  2022-10-11   | 4 days | Project_D  | start |
+|  2022-10-12   | 5 days | Project_E  | start |
+|  2022-10-15   | 8 days | Project_C  | presentation |
+|  2022-10-16   | 9 days | Project_D  | presentation |
+|  2022-10-17   | 10 days | Project_E | presentation |
+|  2022-10-21   | 14 days | Project_B | project close |
+|  2022-10-22   | 15 days | Project_C | project close |
+|  2022-10-23   | 16 days | Project_D | project close |
+|  2022-10-24   | 17 days | Project_E | project close |
 
-Additional to-do-list items not associated with a given article can also be folded in. Assuming you have a second (optional) spreadsheet called Other_todos.csv with columns for Due_date, Todo (text) and Done (TRUE/FALSE), this:
-
-![](spreadsheet_with_extra_todos.png)
-
-becomes:
-
-    # A tibble: 15 x 5
-       Date       Pub_date   Remaining Topic               Milestone  
-       <date>     <date>     <drtn>    <chr>               <chr>      
-     1 2021-03-18 2021-03-25  2 days   Cancer              Pages pass 
-     2 2021-03-18 2021-05-06  2 days   Microscopy          First draft
-     3 2021-03-24 2021-04-01  8 days   Neuroscience        Pages pass 
-     4 2021-03-25 2021-04-22  9 days   Bioinformatics      Art brief  
-     5 2021-03-25 2021-05-13  9 days   Genomics            First draft
-     6 2021-03-30 2021-04-22 14 days   Bioinformatics      Subedit    
-     7 2021-04-01 NA         16 days   Start fact-checking To-do      
-     8 2021-04-08 2021-05-06 23 days   Microscopy          Art brief  
-     9 2021-04-14 2021-05-06 29 days   Microscopy          Subedit    
-    10 2021-04-14 NA         29 days   Schedule meeting    To-do      
-    11 2021-04-15 2021-04-22 30 days   Bioinformatics      Pages pass 
-    12 2021-04-15 2021-05-13 30 days   Genomics            Art brief  
-    13 2021-04-21 2021-05-13 36 days   Genomics            Subedit    
-    14 2021-04-28 2021-05-06 43 days   Microscopy          Pages pass 
-    15 2021-05-06 2021-05-13 51 days   Genomics            Pages pass 
+**Note** that this script requires that `MILESTONE` is identical between `MILESTONE_date` and `MILESTONE_done`. In other words, this will work: `presentation_date`/`presentation_done`. But this will not: `presentation_date`/`Presentation_done`. 
 
 # Usage
-1. Download this Git repository
-2. By default, the script assumes dates will be given in the format "YYYY-MM-DD". If you use another format, eg "MM/DD/YYYY", use a plain-text editor (eg, Windows Notepad or macOS TextEdit) to indicate that on line 21.
-3. The script also assumes the CSVs containing your to-do list will be in the same directory as the script, with the names `Planning_spreadsheet_demo.csv` and `Other_todos.csv`. If that is not the case, adjust the file paths on lines 24-25 accordingly.
-4. At the command line, navigate to the directory where you downloaded this script and execute `Rscript todo.R` (macOS) or `Rscript.exe todo.R` (Windows).
+
+1.  Download this Git repository
+2.  By default, the script assumes dates will be given in the format "YYYY-MM-DD". If you use another format, eg "MM/DD/YYYY", use a plain-text editor (eg, Windows Notepad or macOS TextEdit) to indicate that on line 17.
+3.  At the command line, navigate to the directory where you downloaded this script and execute `Rscript todo.R` (macOS) or `Rscript.exe todo.R` (Windows).
 
 # License
 
