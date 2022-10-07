@@ -18,7 +18,7 @@ date_format <- "%Y-%m-%d"
 today <- Sys.Date()
 
 # this script uses an artificial table, but you can load one from CSV: 
-# mytable <- read_csv("my_spreadsheet.csv")
+# mytable <- read_csv("Planning_spreadsheet_demo.csv")
 
 projects <- paste0("Project_", LETTERS[1:6])
 m1_done <- c(T, T, T, F, F, F)
